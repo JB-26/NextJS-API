@@ -2,8 +2,8 @@
 
 Using the following video: https://www.youtube.com/watch?v=aEFkWxUNAVc&list=WL&index=6
 
-Current position: https://youtu.be/aEFkWxUNAVc?t=2726
-Current time: 45:26
+Current position: https://youtu.be/aEFkWxUNAVc?t=4417
+Current time: 1:13:37
 
 Fun fact: `npx create-next-app@latest .` means that the app will be created in the current directory.
 
@@ -11,6 +11,7 @@ Everything backend will be in the api folder. The users folder will be an API on
 
 If we have a folder with parentheses (auth) this will be ignored in the URL on the backend and frontend.
 
+If we have a folder with square brackets [category] this will be dynamic.
 
 # Notes
 
