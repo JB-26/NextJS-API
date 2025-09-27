@@ -2,8 +2,8 @@
 
 Using the following video: https://www.youtube.com/watch?v=aEFkWxUNAVc&list=WL&index=6
 
-Current position: https://youtu.be/aEFkWxUNAVc?t=4417
-Current time: 1:13:37
+Current position: https://youtu.be/aEFkWxUNAVc?t=4923
+Current time: 1:22:03
 
 Fun fact: `npx create-next-app@latest .` means that the app will be created in the current directory.
 
