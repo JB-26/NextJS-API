@@ -13,7 +13,7 @@ export const GET = async () => {
     const users = await User.find();
     return new NextResponse(JSON.stringify(users), { status: 200 });
   } catch (error) {
-    return new NextResponse(`Error in fetching users`, {
+    return new NextResponse(`Error in fetching users ${error}`, {
       status: 500,
     });
   }
@@ -79,7 +79,7 @@ export const PATCH = async (request: Request) => {
     );
   } catch (error) {
     return new NextResponse(
-      JSON.stringify({ message: `Error in updating user` }),
+      JSON.stringify({ message: `Error in updating user ${error}` }),
       { status: 500 },
     );
   }
@@ -121,7 +121,7 @@ export const DELETE = async (request: Request) => {
     );
   } catch (error) {
     return new NextResponse(
-      JSON.stringify({ message: `Error in deleting user` }),
+      JSON.stringify({ message: `Error in deleting user ${error}` }),
       { status: 500 },
     );
   }

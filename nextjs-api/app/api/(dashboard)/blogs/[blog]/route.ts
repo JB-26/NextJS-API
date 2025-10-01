@@ -5,7 +5,12 @@ import Blog from "@/lib/modals/blog";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
 
-export const GET = async (request: Request) => {
+// context needed as this is a dynamic route
+export const GET = async (
+  request: Request,
+  context: { params: Promise<{ blog: string }> },
+) => {
+  const { blog: blogId } = await context.params;
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
@@ -21,6 +26,13 @@ export const GET = async (request: Request) => {
     if (!categoryId || !Types.ObjectId.isValid(categoryId)) {
       return new NextResponse(
         JSON.stringify({ message: "Invalid or missing categoryId" }),
+        { status: 400 },
+      );
+    }
+
+    if (!blogId || !Types.ObjectId.isValid(blogId)) {
+      return new NextResponse(
+        JSON.stringify({ message: "Invalid or missing blogId" }),
         { status: 400 },
       );
     }
@@ -46,17 +58,22 @@ export const GET = async (request: Request) => {
       );
     }
 
-    // find the blogs for a user
-    const filter = {
-      user: new Types.ObjectId(userId),
-      category: new Types.ObjectId(categoryId),
-    };
+    // find a single blog
+    const blog = await Blog.findOne({
+      _id: blogId,
+      user: userId,
+      category: categoryId,
+    });
 
-    //TODO
+    if (!blog) {
+      return new NextResponse(JSON.stringify({ message: "Blog not found" }), {
+        status: 404,
+      });
+    }
 
-    const blogs = await Blog.find(filter);
-
-    return new NextResponse(JSON.stringify({ blogs }), { status: 200 });
+    return new NextResponse(JSON.stringify({ blog }), {
+      status: 200,
+    });
   } catch (error) {
     return new NextResponse(`Error in fetching blogs ${error}`, {
       status: 500,

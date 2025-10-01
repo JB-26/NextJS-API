@@ -15,8 +15,9 @@ const connect = async () => {
     return;
   }
 
+  // ensure that the connection is established before proceeding
   try {
-    mongoose.connect(MONGODB_URI!, {
+    await mongoose.connect(MONGODB_URI!, {
       dbName: "nextrestapi",
       bufferCommands: true,
     });
