@@ -2,7 +2,7 @@ import connect from "@/lib/db";
 import User from "@/lib/modals/user";
 import Category from "@/lib/modals/category";
 import Blog from "@/lib/modals/blog";
-import { Types } from "mongoose";
+import { Types, FilterQuery } from "mongoose";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
@@ -10,6 +10,9 @@ export const GET = async (request: Request) => {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
     const categoryId = searchParams.get("categoryId");
+    const searchKeywords = searchParams.get("keywords") as string;
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse(
@@ -47,14 +50,40 @@ export const GET = async (request: Request) => {
     }
 
     // find the blogs for a user
-    const filter = {
+    const filter: FilterQuery<typeof Blog> = {
       user: new Types.ObjectId(userId),
       category: new Types.ObjectId(categoryId),
     };
 
-    //TODO
+    // filter the results
+    if (searchKeywords) {
+      filter.$or = [
+        {
+          title: { $regex: searchKeywords, $options: "i" },
+        },
+        {
+          description: { $regex: searchKeywords, $options: "i" },
+        },
+      ];
+    }
 
-    const blogs = await Blog.find(filter);
+    if (startDate && endDate) {
+      filter.createdAt = {
+        // greater than, less than
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    } else if (startDate) {
+      filter.createdAt = {
+        $gte: new Date(startDate),
+      };
+    } else if (endDate) {
+      filter.createdAt = {
+        $lte: new Date(endDate),
+      };
+    }
+
+    const blogs = await Blog.find(filter).sort({ createdAt: "asc" });
 
     return new NextResponse(JSON.stringify({ blogs }), { status: 200 });
   } catch (error) {
