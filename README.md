@@ -16,3 +16,5 @@ If we have a folder with square brackets [category] this will be dynamic.
 # Notes
 
 The `users.ts` file will be a database model that is stored in MongoDB. Our DB name is defined in db.ts and is called `nextrestapi`.
+
+`middleware.ts` is a file that runs before every request. On the front end, before the route, and on the backend, before every API request.

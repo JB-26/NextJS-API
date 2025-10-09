@@ -13,6 +13,9 @@ export const GET = async (request: Request) => {
     const searchKeywords = searchParams.get("keywords") as string;
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
+    // providing a fallback if values are null or undefined
+    const page = parseInt(searchParams.get("page") ?? "1");
+    const limit = parseInt(searchParams.get("limit") ?? "10");
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse(
@@ -83,7 +86,13 @@ export const GET = async (request: Request) => {
       };
     }
 
-    const blogs = await Blog.find(filter).sort({ createdAt: "asc" });
+    // skip first 10 blogs, and start fetching the blogs after the skip value
+    const skip = (page - 1) * limit;
+
+    const blogs = await Blog.find(filter)
+      .sort({ createdAt: "asc" })
+      .skip(skip)
+      .limit(limit);
 
     return new NextResponse(JSON.stringify({ blogs }), { status: 200 });
   } catch (error) {
