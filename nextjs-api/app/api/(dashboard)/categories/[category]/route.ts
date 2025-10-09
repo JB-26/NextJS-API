@@ -4,12 +4,10 @@ import Category from "@/lib/modals/category";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
 
-type Params = {
-  category: string;
-};
+type Params = Promise<{ category: string }>;
 
 export const PATCH = async (request: Request, context: { params: Params }) => {
-  const categoryId = await context.params.category;
+  const { category: categoryId } = await context.params;
   try {
     const body = await request.json();
     const { title } = body;
@@ -74,7 +72,7 @@ export const PATCH = async (request: Request, context: { params: Params }) => {
 };
 
 export const DELETE = async (request: Request, context: { params: Params }) => {
-  const categoryId = await context.params.category;
+  const { category: categoryId } = await context.params;
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
